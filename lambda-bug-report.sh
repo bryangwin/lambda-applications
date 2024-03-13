@@ -3,7 +3,6 @@
 # This script is intended to run on a Lambda machine and collects various system logs and information for diagnostic purposes.
 # It includes the use of NVIDIA's bug report script to gather detailed information about NVIDIA GPU installations.
 # Credit to NVIDIA Corporation for the nvidia-bug-report.sh script.
-# Credit to Mark Dalton for collect_drive_checks.
 
 # Author: Bryan Gwin
 # Date: 2024-03-13
@@ -22,19 +21,18 @@ collect_drive_checks() {
         sudo apt-get update && sudo apt-get install -y smartmontools
     fi
 
+    # Create Directory for Drive Checks
+    DRIVE_CHECKS_DIR="$FINAL_DIR/check-drives"
+    mkdir -p "$DRIVE_CHECKS_DIR"
+
+    lsblk -f > "$DRIVE_CHECKS_DIR/lsblk.txt"
+
     DRIVES=$(lsblk | egrep "^sd|^nvm" | awk '{print $1}')
-
-    mkdir -p check-drives
-    lsblk -f > check-drives/lsblk.txt
-
-    for DRIVE in ${DRIVES} ; do
-        sudo smartctl -x /dev/${DRIVE} > check-drives/smartctl-${DRIVE}.txt 2>&1
+    for DRIVE in ${DRIVES}; do
+        sudo smartctl -x /dev/"${DRIVE}" > "$DRIVE_CHECKS_DIR/smartctl-${DRIVE}.txt" 2>&1
     done
-
-    tar -zcf check-drives.tgz check-drives
-    # Expand check-drives.tgz into the FINAL_DIR directory
-    tar -xzf check-drives.tgz -C "$FINAL_DIR"
 }
+
 
 # Generate NVIDIA bug report
 sudo nvidia-bug-report.sh
@@ -44,10 +42,16 @@ if [ -f "nvidia-bug-report.log.gz" ]; then
     gunzip -c nvidia-bug-report.log.gz > "${FINAL_DIR}/nvidia-bug-report.log"
 fi
 
-# Generate system logs archive
-tar -zcf system_logs.tgz $(ls /var/log/dmesg /var/log/kern.log /var/log/syslog /var/log/apt/history.log)
-# Expand system_logs.tgz into the FINAL_DIR directory
-tar -xzf system_logs.tgz -C "$FINAL_DIR"
+# Define the destination directory for system logs within $FINAL_DIR
+SYSTEM_LOGS_DIR="$FINAL_DIR/system_logs"
+mkdir -p "$SYSTEM_LOGS_DIR"
+
+for log in /var/log/dmesg /var/log/kern.log /var/log/syslog /var/log/apt/history.log; do
+    if [ -f "$log" ]; then
+        cp "$log" "$SYSTEM_LOGS_DIR/"
+    fi
+done
+
 
 # Collect other logs
 sudo dmesg -Tl err > "${FINAL_DIR}/dmesg_errors.txt"
