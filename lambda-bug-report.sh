@@ -42,7 +42,7 @@ if [ -f "nvidia-bug-report.log.gz" ]; then
     gunzip -c nvidia-bug-report.log.gz > "${FINAL_DIR}/nvidia-bug-report.log"
 fi
 
-# Define the destination directory for system logs within $FINAL_DIR
+# Collect system logs
 SYSTEM_LOGS_DIR="$FINAL_DIR/system_logs"
 mkdir -p "$SYSTEM_LOGS_DIR"
 
