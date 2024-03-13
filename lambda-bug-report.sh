@@ -32,7 +32,6 @@ collect_drive_checks() {
     done
 
     tar -zcf check-drives.tgz check-drives
-    echo "Drive check archive created: check-drives.tgz"
     # Expand check-drives.tgz into the FINAL_DIR directory
     tar -xzf check-drives.tgz -C "$FINAL_DIR"
 }
