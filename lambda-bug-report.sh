@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script is intended to run on a Lambda machine and collects various system logs and information for diagnostic purposes.
-# It includes the use of NVIDIA's bug report script to gather detailed information about NVIDIA GPU installations.
+# It includes the use of NVIDIA's bug report script to gather detailed information about NVIDIA GPUs and other system info.
 # Credit to NVIDIA Corporation for the nvidia-bug-report.sh script.
 
 # Author: Bryan Gwin
