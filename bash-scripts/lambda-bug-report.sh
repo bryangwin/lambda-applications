@@ -84,10 +84,21 @@ if ! command -v iostat &>/dev/null; then
 fi
 sudo iostat -xt >"${FINAL_DIR}/iostat.txt"
 
+# Check if lshw is installed and install if not present
+if ! command -v lshw &>/dev/null; then
+    echo "lshw could not be found, attempting to install."
+    sudo apt-get update && sudo apt-get install -y lshw
+fi
+lshw >"${FINAL_DIR}/hw_list.txt"
+
 # Check for memory remapping and memory errors on GPUs
 nvidia-smi --query-remapped-rows=gpu_bus_id,gpu_uuid,remapped_rows.correctable,remapped_rows.uncorrectable,remapped_rows.pending,remapped_rows.failure --format=csv >"${FINAL_DIR}/remapped_memory.txt"
 nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.corrected.volatile.dram,ecc.errors.corrected.volatile.sram --format=csv >"${FINAL_DIR}/ecc_errors.txt"
 nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.uncorrected.aggregate.dram,ecc.errors.uncorrected.aggregate.sram --format=csv >"${FINAL_DIR}/uncorrected_ecc_errors.txt"
+
+# Check hibernation settings
+sudo systemctl status hibernate.target hybrid-sleep.target \
+    suspend-then-hibernate.target sleep.target suspend.target >"${FINAL_DIR}/hibernation_settings.txt"
 
 # Collect other system information
 df -hTP >"${FINAL_DIR}/df.txt"
@@ -96,7 +107,6 @@ cat /etc/default/grub >"${FINAL_DIR}/grub.txt"
 lsmod >"${FINAL_DIR}/modules.txt"
 dpkg -l >"${FINAL_DIR}/dpkg.txt"
 pip -v list >"${FINAL_DIR}/pip_list.txt"
-lshw >"${FINAL_DIR}/hw_list.txt"
 ls /etc/apt/sources.list.d >"${FINAL_DIR}/listd_repos.txt"
 grep -v '^#' /etc/apt/sources.list >"${FINAL_DIR}/sources_list.txt"
 cat /proc/mounts >"${FINAL_DIR}/mounts.txt"
