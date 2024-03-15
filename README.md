@@ -4,6 +4,7 @@ A collection of applications, scripts and tools geared towardds Lambda Labs empl
 #### `lambda-bug-report.sh`
 This script is intended to run on a Lambda machine and collects various system logs and information for diagnostic purposes.
 It includes the use of NVIDIA's bug report script to gather detailed information about NVIDIA GPUs and other system info.
+
 Note: This script consolidates system information, which may include sensitive data. User discretion advised.
 
 
