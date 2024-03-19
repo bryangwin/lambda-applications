@@ -5,11 +5,11 @@
 # Credit to NVIDIA Corporation for the nvidia-bug-report.sh script.
 # Note: This script consolidates system information, which may include sensitive data. User discretion advised.
 
-
 # Copyright 2024 Lambda, Inc.
 # Website:		https://lambdalabs.com
 # Author(s):		Bryan Gwin
 # Script License:	BSD 3-clause
+
 
 # Define temporary directory for processing
 TMP_DIR="tmp_lambda_bug_report"
@@ -30,6 +30,7 @@ collect_drive_checks() {
 
     lsblk -f >"$DRIVE_CHECKS_DIR/lsblk.txt"
 
+    # Collect SMART data for all drives
     DRIVES=$(lsblk | egrep "^sd|^nvm" | awk '{print $1}')
     for DRIVE in ${DRIVES}; do
         sudo smartctl -x /dev/"${DRIVE}" >"$DRIVE_CHECKS_DIR/smartctl-${DRIVE}.txt" 2>&1
@@ -73,7 +74,7 @@ fi
 sudo ipmitool sel elist >"${FINAL_DIR}/elist.txt"
 sudo ipmitool sdr >"${FINAL_DIR}/sdr.txt"
 
-# Chech for sensors and install if not present
+# Check for sensors and install if not present
 if ! command -v sensors &>/dev/null; then
     echo "sensors could not be found, attempting to install."
     sudo apt-get update && sudo apt-get install -y lm-sensors
@@ -87,7 +88,7 @@ if ! command -v iostat &>/dev/null; then
 fi
 sudo iostat -xt >"${FINAL_DIR}/iostat.txt"
 
-# Check if lshw is installed and install if not present
+# Check for lshw and install if not present
 if ! command -v lshw &>/dev/null; then
     echo "lshw could not be found, attempting to install."
     sudo apt-get update && sudo apt-get install -y lshw
