@@ -6,9 +6,10 @@
 # Note: This script consolidates system information, which may include sensitive data. User discretion advised.
 
 
-# Author: Bryan Gwin
-# Date: March 13 2024
-# www.lambdalabs.com/support
+# Copyright 2024 Lambda, Inc.
+# Website:		https://lambdalabs.com
+# Author(s):		Bryan Gwin
+# Script License:	BSD 3-clause
 
 # Define temporary directory for processing
 TMP_DIR="tmp_lambda_bug_report"
