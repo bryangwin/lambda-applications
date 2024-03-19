@@ -7,8 +7,8 @@
 
 
 # Author: Bryan Gwin
-# Date: 2024-03-13
-# Version: 1.0
+# Date: March 13 2024
+# www.lambdalabs.com/support
 
 # Define temporary directory for processing
 TMP_DIR="tmp_lambda_bug_report"
