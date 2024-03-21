@@ -59,7 +59,6 @@ collect_drive_checks() {
     done
 }
 
-
 # Generate NVIDIA bug report
 echo "Running nvidia-bug-report.sh..."
 sudo nvidia-bug-report.sh >/dev/null 2>&1
