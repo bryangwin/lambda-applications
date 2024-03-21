@@ -186,7 +186,7 @@ top -n 1 -b >"${FINAL_DIR}/top.txt"
 collect_drive_checks
 
 # Compress all collected logs into a single file
-tar -zcf lambda-bug-report.tar.gz -C "$TMP_DIR" lambda-bug-report
+sudo tar -zcf lambda-bug-report.tar.gz -C "$TMP_DIR" lambda-bug-report
 
 # Cleanup
 rm -rf "$TMP_DIR"
