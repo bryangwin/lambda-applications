@@ -59,8 +59,10 @@ collect_drive_checks() {
     done
 }
 
+
 # Generate NVIDIA bug report
-sudo nvidia-bug-report.sh
+echo "Running nvidia-bug-report.sh..."
+sudo nvidia-bug-report.sh >/dev/null 2>&1
 
 # If nvidia-bug-report.log.gz exists, decompress it
 if [ -f "nvidia-bug-report.log.gz" ]; then
