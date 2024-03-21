@@ -10,6 +10,17 @@
 # Author(s):		Bryan Gwin
 # Script License:	BSD 3-clause
 
+# Inform customer of script purpose
+echo "This script is intended to run on a Lambda machine and collects various system logs and information for diagnostic purposes.
+It includes the use of NVIDIA's bug report script to gather detailed information about NVIDIA GPUs and other system info.
+Credit to NVIDIA Corporation for the nvidia-bug-report.sh script."
+echo
+echo "By delivering 'lambda-bug-report.log.gz' to Lambda, you acknowledge
+and agree that sensitive information may inadvertently be included in
+the output. Notwithstanding the foregoing, Lambda will use the
+output only for the purpose of investigating your reported issue."
+echo
+
 # Define and create temporary directory
 TMP_DIR="tmp_lambda_bug_report"
 mkdir -p "$TMP_DIR"
