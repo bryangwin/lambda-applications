@@ -56,6 +56,8 @@ if [ -f "nvidia-bug-report.log.gz" ]; then
     gunzip -c nvidia-bug-report.log.gz >"${FINAL_DIR}/nvidia-bug-report.log"
 fi
 
+echo "Collecting system logs and information..."
+
 # Collect system logs
 for log in /var/log/dmesg /var/log/kern.log /var/log/syslog /var/log/apt/history.log; do
     if [ -f "$log" ]; then
@@ -66,6 +68,9 @@ done
 # Collect other logs
 sudo dmesg -Tl err >"${SYSTEM_LOGS_DIR}/dmesg-errors.txt"
 journalctl >"${SYSTEM_LOGS_DIR}/journalctl.txt"
+
+# Debugging information
+echo $PATH
 
 # Check for ibstat and install if not present
 if ! command -v ibstat &>/dev/null; then
@@ -136,7 +141,7 @@ top -n 1 -b >"${FINAL_DIR}/top.txt"
 collect_drive_checks
 
 # Compress all collected logs into a single file
-tar -zcvf lambda-bug-report.tar.gz -C "$TMP_DIR" lambda-bug-report
+tar -zcf lambda-bug-report.tar.gz -C "$TMP_DIR" lambda-bug-report
 
 # Cleanup
 rm -rf "$TMP_DIR"
