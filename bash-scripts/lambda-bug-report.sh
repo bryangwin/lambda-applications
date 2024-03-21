@@ -81,8 +81,8 @@ if ! command -v ipmitool &>/dev/null; then
     echo "ipmitool could not be found, attempting to install."
     sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y ipmitool >/dev/null 2>&1
 fi
-sudo ipmitool sel elist >"${BMC_INFO_DIR}/elist.txt"
-sudo ipmitool sdr >"${BMC_INFO_DIR}/sdr.txt"
+sudo ipmitool sel elist >"${BMC_INFO_DIR}/elist.txt" 2>/dev/null
+sudo ipmitool sdr >"${BMC_INFO_DIR}/sdr.txt" 2>/dev/null
 
 # Check for sensors and install if not present
 if ! command -v sensors &>/dev/null; then
@@ -143,4 +143,6 @@ tar -zcf lambda-bug-report.tar.gz -C "$TMP_DIR" lambda-bug-report
 # Cleanup
 rm -rf "$TMP_DIR"
 
+echo
 echo "All logs have been collected and compressed into lambda-bug-report.tar.gz."
+echo
