@@ -10,11 +10,18 @@
 # Author(s):		Bryan Gwin
 # Script License:	BSD 3-clause
 
-# Define temporary directory for processing
+# Define temporary directory and final directory structure
 TMP_DIR="tmp_lambda_bug_report"
 mkdir -p "$TMP_DIR"
 FINAL_DIR="$TMP_DIR/lambda-bug-report"
 mkdir -p "$FINAL_DIR"
+DRIVE_CHECKS_DIR="$FINAL_DIR/drives-and-storage"
+mkdir -p "$DRIVE_CHECKS_DIR"
+SYSTEM_LOGS_DIR="$FINAL_DIR/system-logs"
+mkdir -p "$SYSTEM_LOGS_DIR"
+REPOS_AND_PACKAGES_DIR="$FINAL_DIR/repos-and-packages"
+mkdir -p "$REPOS_AND_PACKAGES_DIR"
+NETWORKING_DIR="$FINAL_DIR/networking"
 
 collect_drive_checks() {
     # Ensure smartmontools is installed for smartctl
@@ -22,10 +29,6 @@ collect_drive_checks() {
         echo "smartctl could not be found, attempting to install."
         sudo apt-get update && sudo apt-get install -y smartmontools
     fi
-
-    # Create Directory for Drive Checks
-    DRIVE_CHECKS_DIR="$FINAL_DIR/check-drives"
-    mkdir -p "$DRIVE_CHECKS_DIR"
 
     lsblk -f >"$DRIVE_CHECKS_DIR/lsblk.txt"
 
@@ -45,9 +48,6 @@ if [ -f "nvidia-bug-report.log.gz" ]; then
 fi
 
 # Collect system logs
-SYSTEM_LOGS_DIR="$FINAL_DIR/system_logs"
-mkdir -p "$SYSTEM_LOGS_DIR"
-
 for log in /var/log/dmesg /var/log/kern.log /var/log/syslog /var/log/apt/history.log; do
     if [ -f "$log" ]; then
         cp "$log" "$SYSTEM_LOGS_DIR/"
@@ -55,8 +55,8 @@ for log in /var/log/dmesg /var/log/kern.log /var/log/syslog /var/log/apt/history
 done
 
 # Collect other logs
-sudo dmesg -Tl err >"${FINAL_DIR}/dmesg_errors.txt"
-journalctl >"${FINAL_DIR}/journalctl.txt"
+sudo dmesg -Tl err >"${FINAL_DIR}/${SYSTEM_LOGS_DIR}/dmesg-errors.txt"
+journalctl >"${FINAL_DIR}/${SYSTEM_LOGS_DIR}/journalctl.txt"
 
 # Check for ibstat and install if not present
 if ! command -v ibstat &>/dev/null; then
@@ -92,39 +92,39 @@ if ! command -v lshw &>/dev/null; then
     echo "lshw could not be found, attempting to install."
     sudo apt-get update && sudo apt-get install -y lshw
 fi
-lshw >"${FINAL_DIR}/hw_list.txt"
+lshw >"${FINAL_DIR}/hw-list.txt"
 
 # Check for memory remapping and memory errors on GPUs
 nvidia-smi --query-remapped-rows=gpu_bus_id,gpu_uuid,remapped_rows.correctable,\
 remapped_rows.uncorrectable,remapped_rows.pending,remapped_rows.failure \
---format=csv >"${FINAL_DIR}/remapped_memory.txt"
+--format=csv >"${FINAL_DIR}/remapped-memory.txt"
 
 nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.corrected.volatile.dram,\
 ecc.errors.corrected.volatile.sram \
---format=csv >"${FINAL_DIR}/ecc_errors.txt"
+--format=csv >"${FINAL_DIR}/ecc-errors.txt"
 
 nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.uncorrected.aggregate.dram,\
 ecc.errors.uncorrected.aggregate.sram \
---format=csv >"${FINAL_DIR}/uncorrected_ecc_errors.txt"
+--format=csv >"${FINAL_DIR}/uncorrected-ecc_errors.txt"
 
 # Check hibernation settings
 sudo systemctl status hibernate.target hybrid-sleep.target \
-    suspend-then-hibernate.target sleep.target suspend.target >"${FINAL_DIR}/hibernation_settings.txt"
+    suspend-then-hibernate.target sleep.target suspend.target >"${FINAL_DIR}/hibernation-settings.txt"
 
 # Collect other system information
-df -hTP >"${FINAL_DIR}/df.txt"
-cat /etc/fstab >"${FINAL_DIR}/fstab.txt"
+df -hTP >"${FINAL_DIR}/${DRIVE_CHECKS_DIR}/df.txt"
+cat /etc/fstab >"${FINAL_DIR}/${DRIVE_CHECKS_DIR}/fstab.txt"
 cat /etc/default/grub >"${FINAL_DIR}/grub.txt"
 lsmod >"${FINAL_DIR}/modules.txt"
-dpkg -l >"${FINAL_DIR}/dpkg.txt"
-pip -v list >"${FINAL_DIR}/pip_list.txt"
-ls /etc/apt/sources.list.d >"${FINAL_DIR}/listd_repos.txt"
-grep -v '^#' /etc/apt/sources.list >"${FINAL_DIR}/sources_list.txt"
-cat /proc/mounts >"${FINAL_DIR}/mounts.txt"
+dpkg -l >"${FINAL_DIR}/${REPOS_AND_PACKAGES_DIR}/dpkg.txt"
+pip -v list >"${FINAL_DIR}/${REPOS_AND_PACKAGES_DIR}/pip-list.txt"
+ls /etc/apt/sources.list.d >"${FINAL_DIR}/${REPOS_AND_PACKAGES_DIR}/listd-repos.txt"
+grep -v '^#' /etc/apt/sources.list >"${FINAL_DIR}/${REPOS_AND_PACKAGES_DIR}/sources-list.txt"
+cat /proc/mounts >"${FINAL_DIR}/${DRIVE_CHECKS_DIR}/mounts.txt"
 sysctl -a >"${FINAL_DIR}/sysctl.txt"
 systemctl --type=service >"${FINAL_DIR}/services.txt"
-sudo netplan get all >"${FINAL_DIR}/netplan.txt"
-ip addr >"${FINAL_DIR}/ip_addr.txt"
+sudo netplan get all >"${FINAL_DIR}/${NETWORKING_DIR}netplan.txt"
+ip addr >"${FINAL_DIR}/${NETWORKING_DIR}/ip-addr.txt"
 top -n 1 -b >"${FINAL_DIR}/top.txt"
 
 collect_drive_checks
