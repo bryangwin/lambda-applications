@@ -100,17 +100,14 @@ fi
 lshw >"${FINAL_DIR}/hw-list.txt"
 
 # Check for memory remapping and memory errors on GPUs
-nvidia-smi --query-remapped-rows=gpu_bus_id,gpu_uuid,remapped_rows.correctable,\
-remapped_rows.uncorrectable,remapped_rows.pending,remapped_rows.failure \
---format=csv >"${FINAL_DIR}/${GPU_DIR}/remapped-memory.txt"
+nvidia-smi --query-remapped-rows=gpu_bus_id,gpu_uuid,remapped_rows.correctable,remapped_rows.uncorrectable,remapped_rows.pending,remapped_rows.failure \
+    --format=csv >"${FINAL_DIR}/${GPU_DIR}/remapped-memory.txt"
 
-nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.corrected.volatile.dram,\
-ecc.errors.corrected.volatile.sram \
---format=csv >"${FINAL_DIR}/${GPU_DIR}/ecc-errors.txt"
+nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.corrected.volatile.dram,ecc.errors.corrected.volatile.sram \
+    --format=csv >"${FINAL_DIR}/${GPU_DIR}/ecc-errors.txt"
 
-nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.uncorrected.aggregate.dram,\
-ecc.errors.uncorrected.aggregate.sram \
---format=csv >"${FINAL_DIR}/${GPU_DIR}/uncorrected-ecc_errors.txt"
+nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.uncorrected.aggregate.dram,ecc.errors.uncorrected.aggregate.sram \
+    --format=csv >"${FINAL_DIR}/${GPU_DIR}/uncorrected-ecc_errors.txt"
 
 # Check hibernation settings
 sudo systemctl status hibernate.target hybrid-sleep.target \
@@ -120,14 +117,14 @@ sudo systemctl status hibernate.target hybrid-sleep.target \
 df -hTP >"${FINAL_DIR}/${DRIVE_CHECKS_DIR}/df.txt"
 cat /etc/fstab >"${FINAL_DIR}/${DRIVE_CHECKS_DIR}/fstab.txt"
 cat /etc/default/grub >"${FINAL_DIR}/grub.txt"
-lsmod >"${FINAL_DIR}/modules.txt"
+lsmod >"${FINAL_DIR}/lsmod.txt"
 dpkg -l >"${FINAL_DIR}/${REPOS_AND_PACKAGES_DIR}/dpkg.txt"
 pip -v list >"${FINAL_DIR}/${REPOS_AND_PACKAGES_DIR}/pip-list.txt"
 ls /etc/apt/sources.list.d >"${FINAL_DIR}/${REPOS_AND_PACKAGES_DIR}/listd-repos.txt"
 grep -v '^#' /etc/apt/sources.list >"${FINAL_DIR}/${REPOS_AND_PACKAGES_DIR}/sources-list.txt"
 cat /proc/mounts >"${FINAL_DIR}/${DRIVE_CHECKS_DIR}/mounts.txt"
 sysctl -a >"${FINAL_DIR}/sysctl.txt"
-systemctl --type=service >"${FINAL_DIR}/services.txt"
+systemctl --type=service >"${FINAL_DIR}/systemctl-services.txt"
 sudo netplan get all >"${FINAL_DIR}/${NETWORKING_DIR}netplan.txt"
 ip addr >"${FINAL_DIR}/${NETWORKING_DIR}/ip-addr.txt"
 top -n 1 -b >"${FINAL_DIR}/top.txt"
