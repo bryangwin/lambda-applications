@@ -114,19 +114,19 @@ sudo systemctl status hibernate.target hybrid-sleep.target \
     suspend-then-hibernate.target sleep.target suspend.target >"${FINAL_DIR}/hibernation-settings.txt"
 
 # Collect other system information
-df -hTP >"${FINAL_DIR}/${DRIVE_CHECKS_DIR}/df.txt"
-cat /etc/fstab >"${FINAL_DIR}/${DRIVE_CHECKS_DIR}/fstab.txt"
+df -hTP >"${DRIVE_CHECKS_DIR}/df.txt"
+cat /etc/fstab >"${DRIVE_CHECKS_DIR}/fstab.txt"
 cat /etc/default/grub >"${FINAL_DIR}/grub.txt"
 lsmod >"${FINAL_DIR}/lsmod.txt"
-dpkg -l >"${FINAL_DIR}/${REPOS_AND_PACKAGES_DIR}/dpkg.txt"
-pip -v list >"${FINAL_DIR}/${REPOS_AND_PACKAGES_DIR}/pip-list.txt"
-ls /etc/apt/sources.list.d >"${FINAL_DIR}/${REPOS_AND_PACKAGES_DIR}/listd-repos.txt"
-grep -v '^#' /etc/apt/sources.list >"${FINAL_DIR}/${REPOS_AND_PACKAGES_DIR}/sources-list.txt"
-cat /proc/mounts >"${FINAL_DIR}/${DRIVE_CHECKS_DIR}/mounts.txt"
+dpkg -l >"${REPOS_AND_PACKAGES_DIR}/dpkg.txt"
+pip -v list >"${REPOS_AND_PACKAGES_DIR}/pip-list.txt"
+ls /etc/apt/sources.list.d >"${REPOS_AND_PACKAGES_DIR}/listd-repos.txt"
+grep -v '^#' /etc/apt/sources.list >"${REPOS_AND_PACKAGES_DIR}/sources-list.txt"
+cat /proc/mounts >"${DRIVE_CHECKS_DIR}/mounts.txt"
 sysctl -a >"${FINAL_DIR}/sysctl.txt"
 systemctl --type=service >"${FINAL_DIR}/systemctl-services.txt"
-sudo netplan get all >"${FINAL_DIR}/${NETWORKING_DIR}netplan.txt"
-ip addr >"${FINAL_DIR}/${NETWORKING_DIR}/ip-addr.txt"
+sudo netplan get all >"${NETWORKING_DIR}/netplan.txt"
+ip addr >"${NETWORKING_DIR}/ip-addr.txt"
 top -n 1 -b >"${FINAL_DIR}/top.txt"
 
 collect_drive_checks
