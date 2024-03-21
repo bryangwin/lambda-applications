@@ -10,7 +10,6 @@
 # Author(s):		Bryan Gwin
 # Script License:	BSD 3-clause
 
-
 # Define temporary directory for processing
 TMP_DIR="tmp_lambda_bug_report"
 mkdir -p "$TMP_DIR"
@@ -96,9 +95,17 @@ fi
 lshw >"${FINAL_DIR}/hw_list.txt"
 
 # Check for memory remapping and memory errors on GPUs
-nvidia-smi --query-remapped-rows=gpu_bus_id,gpu_uuid,remapped_rows.correctable,remapped_rows.uncorrectable,remapped_rows.pending,remapped_rows.failure --format=csv >"${FINAL_DIR}/remapped_memory.txt"
-nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.corrected.volatile.dram,ecc.errors.corrected.volatile.sram --format=csv >"${FINAL_DIR}/ecc_errors.txt"
-nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.uncorrected.aggregate.dram,ecc.errors.uncorrected.aggregate.sram --format=csv >"${FINAL_DIR}/uncorrected_ecc_errors.txt"
+nvidia-smi --query-remapped-rows=gpu_bus_id,gpu_uuid,remapped_rows.correctable,\
+remapped_rows.uncorrectable,remapped_rows.pending,remapped_rows.failure \
+--format=csv >"${FINAL_DIR}/remapped_memory.txt"
+
+nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.corrected.volatile.dram,\
+ecc.errors.corrected.volatile.sram \
+--format=csv >"${FINAL_DIR}/ecc_errors.txt"
+
+nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.uncorrected.aggregate.dram,\
+ecc.errors.uncorrected.aggregate.sram \
+--format=csv >"${FINAL_DIR}/uncorrected_ecc_errors.txt"
 
 # Check hibernation settings
 sudo systemctl status hibernate.target hybrid-sleep.target \
