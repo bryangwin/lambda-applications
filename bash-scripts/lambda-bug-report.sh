@@ -140,7 +140,7 @@ pip -v list >"${REPOS_AND_PACKAGES_DIR}/pip-list.txt"
 ls /etc/apt/sources.list.d >"${REPOS_AND_PACKAGES_DIR}/listd-repos.txt"
 grep -v '^#' /etc/apt/sources.list >"${REPOS_AND_PACKAGES_DIR}/sources-list.txt"
 cat /proc/mounts >"${DRIVES_AND_STORAGE_DIR}/mounts.txt"
-sudo sysctl -a >"${FINAL_DIR}/sysctl.txt"
+sudo sysctl -a >"${FINAL_DIR}/sysctl-all.txt"
 systemctl --type=service >"${FINAL_DIR}/systemctl-services.txt"
 sudo netplan get all >"${NETWORKING_DIR}/netplan.txt" 2>/dev/null
 ip addr >"${NETWORKING_DIR}/ip-addr.txt"
