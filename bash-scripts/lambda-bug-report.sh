@@ -94,14 +94,14 @@ if ! command -v iostat &>/dev/null; then
     echo "iostat could not be found, attempting to install."
     sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y sysstat >/dev/null 2>&1
 fi
-sudo iostat -xt >"${FINAL_DIR}/iostat.txt"
+sudo iostat -xt >"${DRIVES_AND_STORAGE}/iostat.txt"
 
 # Check for lshw and install if not present
 if ! command -v lshw &>/dev/null; then
     echo "lshw could not be found, attempting to install."
     sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y lshw >/dev/null 2>&1
 fi
-lshw >"${FINAL_DIR}/hw-list.txt"
+sudo lshw >"${FINAL_DIR}/hw-list.txt"
 
 # Check for memory remapping and memory errors on GPUs
 nvidia-smi --query-remapped-rows=gpu_bus_id,gpu_uuid,remapped_rows.correctable,remapped_rows.uncorrectable,remapped_rows.pending,remapped_rows.failure \
@@ -127,9 +127,9 @@ pip -v list >"${REPOS_AND_PACKAGES_DIR}/pip-list.txt"
 ls /etc/apt/sources.list.d >"${REPOS_AND_PACKAGES_DIR}/listd-repos.txt"
 grep -v '^#' /etc/apt/sources.list >"${REPOS_AND_PACKAGES_DIR}/sources-list.txt"
 cat /proc/mounts >"${DRIVES_AND_STORAGE_DIR}/mounts.txt"
-sysctl -a >"${FINAL_DIR}/sysctl.txt"
+sudo sysctl -a >"${FINAL_DIR}/sysctl.txt"
 systemctl --type=service >"${FINAL_DIR}/systemctl-services.txt"
-sudo netplan get all >"${NETWORKING_DIR}/netplan.txt"
+sudo netplan get all >"${NETWORKING_DIR}/netplan.txt" 2>/dev/null
 ip addr >"${NETWORKING_DIR}/ip-addr.txt"
 top -n 1 -b >"${FINAL_DIR}/top.txt"
 
