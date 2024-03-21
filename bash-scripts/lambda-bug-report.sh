@@ -60,8 +60,8 @@ for log in /var/log/dmesg /var/log/kern.log /var/log/syslog /var/log/apt/history
 done
 
 # Collect other logs
-sudo dmesg -Tl err >"${FINAL_DIR}/${SYSTEM_LOGS_DIR}/dmesg-errors.txt"
-journalctl >"${FINAL_DIR}/${SYSTEM_LOGS_DIR}/journalctl.txt"
+sudo dmesg -Tl err >"${SYSTEM_LOGS_DIR}/dmesg-errors.txt"
+journalctl >"${SYSTEM_LOGS_DIR}/journalctl.txt"
 
 # Check for ibstat and install if not present
 if ! command -v ibstat &>/dev/null; then
@@ -75,8 +75,8 @@ if ! command -v ipmitool &>/dev/null; then
     echo "ipmitool could not be found, attempting to install."
     sudo apt-get update && sudo apt-get install -y ipmitool
 fi
-sudo ipmitool sel elist >"${FINAL_DIR}/${BMC_INFO_DIR}/elist.txt"
-sudo ipmitool sdr >"${FINAL_DIR}/${BMC_INFO_DIR}/sdr.txt"
+sudo ipmitool sel elist >"${BMC_INFO_DIR}/elist.txt"
+sudo ipmitool sdr >"${BMC_INFO_DIR}/sdr.txt"
 
 # Check for sensors and install if not present
 if ! command -v sensors &>/dev/null; then
@@ -101,13 +101,13 @@ lshw >"${FINAL_DIR}/hw-list.txt"
 
 # Check for memory remapping and memory errors on GPUs
 nvidia-smi --query-remapped-rows=gpu_bus_id,gpu_uuid,remapped_rows.correctable,remapped_rows.uncorrectable,remapped_rows.pending,remapped_rows.failure \
-    --format=csv >"${FINAL_DIR}/${GPU_DIR}/remapped-memory.txt"
+    --format=csv >"${GPU_DIR}/remapped-memory.txt"
 
 nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.corrected.volatile.dram,ecc.errors.corrected.volatile.sram \
-    --format=csv >"${FINAL_DIR}/${GPU_DIR}/ecc-errors.txt"
+    --format=csv >"${GPU_DIR}/ecc-errors.txt"
 
 nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.uncorrected.aggregate.dram,ecc.errors.uncorrected.aggregate.sram \
-    --format=csv >"${FINAL_DIR}/${GPU_DIR}/uncorrected-ecc_errors.txt"
+    --format=csv >"${GPU_DIR}/uncorrected-ecc_errors.txt"
 
 # Check hibernation settings
 sudo systemctl status hibernate.target hybrid-sleep.target \
