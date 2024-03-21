@@ -88,14 +88,23 @@ if ! command -v ibstat >/dev/null 2>&1; then
     sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y infiniband-diags >/dev/null 2>&1
 fi
 ibstat >"${FINAL_DIR}/ibstat.txt"
+if [ ! -s "${FINAL_DIR}/ibstat.txt" ]; then
+    echo "No InfiniBand data available. This machine may not have InfiniBand." >"${FINAL_DIR}/ibstat.txt"
+fi
 
 # Check for ipmitool and install if not present
 if ! command -v ipmitool >/dev/null 2>&1; then
     echo "ipmitool could not be found, attempting to install."
     sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y ipmitool >/dev/null 2>&1
 fi
-sudo ipmitool sel elist >"${BMC_INFO_DIR}/elist.txt" 2>/dev/null
-sudo ipmitool sdr >"${BMC_INFO_DIR}/sdr.txt" 2>/dev/null
+sudo ipmitool sel elist >"${BMC_INFO_DIR}/ipmi-elist.txt" 2>/dev/null
+if [ ! -s "${BMC_INFO_DIR}/ipmi-elist.txt" ]; then
+    echo "No IPMI ELIST data available. This machine may not have IPMI." >"${BMC_INFO_DIR}/ipmi-elist.txt"
+fi
+sudo ipmitool sdr >"${BMC_INFO_DIR}/ipmi-sdr.txt" 2>/dev/null
+if [ ! -s "${BMC_INFO_DIR}/ipmi-sdr.txt" ]; then
+    echo "No IPMI SDR data available. This machine may not have IPMI." >"${BMC_INFO_DIR}/ipmi-sdr.txt"
+fi
 
 # Check for sensors and install if not present
 if ! command -v sensors >/dev/null 2>&1; then
