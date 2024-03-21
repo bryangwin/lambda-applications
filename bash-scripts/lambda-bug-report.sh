@@ -10,23 +10,28 @@
 # Author(s):		Bryan Gwin
 # Script License:	BSD 3-clause
 
-# Define temporary directory and other directories to be used
+# Create temporary directory
 TMP_DIR="tmp_lambda_bug_report"
 mkdir -p "$TMP_DIR"
+
+# Define final directory structure
 FINAL_DIR="$TMP_DIR/lambda-bug-report"
 mkdir -p "$FINAL_DIR"
-DRIVE_CHECKS_DIR="$FINAL_DIR/drives-and-storage"
-mkdir -p "$DRIVE_CHECKS_DIR"
+
+# Directories under lambda-bug-report
+DRIVES_AND_STORAGE_DIR="$FINAL_DIR/drives-and-storage"
+mkdir -p "$DRIVES_AND_STORAGE_DIR"
 SYSTEM_LOGS_DIR="$FINAL_DIR/system-logs"
 mkdir -p "$SYSTEM_LOGS_DIR"
 REPOS_AND_PACKAGES_DIR="$FINAL_DIR/repos-and-packages"
 mkdir -p "$REPOS_AND_PACKAGES_DIR"
 NETWORKING_DIR="$FINAL_DIR/networking"
 mkdir -p "$NETWORKING_DIR"
-GPU_DIR="$FINAL_DIR/gpu-memory-errors"
-mkdir -p "$GPU_DIR"
+GPU_MEMORY_ERRORS_DIR="$FINAL_DIR/gpu-memory-errors"
+mkdir -p "$GPU_MEMORY_ERRORS_DIR"
 BMC_INFO_DIR="$FINAL_DIR/bmc-info"
 mkdir -p "$BMC_INFO_DIR"
+
 
 collect_drive_checks() {
     # Ensure smartmontools is installed for smartctl
@@ -35,12 +40,12 @@ collect_drive_checks() {
         sudo apt-get update && sudo apt-get install -y smartmontools
     fi
 
-    lsblk -f >"$DRIVE_CHECKS_DIR/lsblk.txt"
+    lsblk -f >"$DRIVES_AND_STORAGE_DIR/lsblk.txt"
 
     # Collect SMART data for all drives
     DRIVES=$(lsblk | egrep "^sd|^nvm" | awk '{print $1}')
     for DRIVE in ${DRIVES}; do
-        sudo smartctl -x /dev/"${DRIVE}" >"$DRIVE_CHECKS_DIR/smartctl-${DRIVE}.txt" 2>&1
+        sudo smartctl -x /dev/"${DRIVE}" >"$DRIVES_AND_STORAGE_DIR/smartctl-${DRIVE}.txt" 2>&1
     done
 }
 
@@ -101,28 +106,28 @@ lshw >"${FINAL_DIR}/hw-list.txt"
 
 # Check for memory remapping and memory errors on GPUs
 nvidia-smi --query-remapped-rows=gpu_bus_id,gpu_uuid,remapped_rows.correctable,remapped_rows.uncorrectable,remapped_rows.pending,remapped_rows.failure \
-    --format=csv >"${GPU_DIR}/remapped-memory.txt"
+    --format=csv >"${GPU_MEMORY_ERRORS_DIR}/remapped-memory.txt"
 
 nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.corrected.volatile.dram,ecc.errors.corrected.volatile.sram \
-    --format=csv >"${GPU_DIR}/ecc-errors.txt"
+    --format=csv >"${GPU_MEMORY_ERRORS_DIR}/ecc-errors.txt"
 
 nvidia-smi --query-gpu=index,pci.bus_id,uuid,ecc.errors.uncorrected.aggregate.dram,ecc.errors.uncorrected.aggregate.sram \
-    --format=csv >"${GPU_DIR}/uncorrected-ecc_errors.txt"
+    --format=csv >"${GPU_MEMORY_ERRORS_DIR}/uncorrected-ecc_errors.txt"
 
 # Check hibernation settings
 sudo systemctl status hibernate.target hybrid-sleep.target \
     suspend-then-hibernate.target sleep.target suspend.target >"${FINAL_DIR}/hibernation-settings.txt"
 
 # Collect other system information
-df -hTP >"${DRIVE_CHECKS_DIR}/df.txt"
-cat /etc/fstab >"${DRIVE_CHECKS_DIR}/fstab.txt"
+df -hTP >"${DRIVES_AND_STORAGE_DIR}/df.txt"
+cat /etc/fstab >"${DRIVES_AND_STORAGE_DIR}/fstab.txt"
 cat /etc/default/grub >"${FINAL_DIR}/grub.txt"
 lsmod >"${FINAL_DIR}/lsmod.txt"
 dpkg -l >"${REPOS_AND_PACKAGES_DIR}/dpkg.txt"
 pip -v list >"${REPOS_AND_PACKAGES_DIR}/pip-list.txt"
 ls /etc/apt/sources.list.d >"${REPOS_AND_PACKAGES_DIR}/listd-repos.txt"
 grep -v '^#' /etc/apt/sources.list >"${REPOS_AND_PACKAGES_DIR}/sources-list.txt"
-cat /proc/mounts >"${DRIVE_CHECKS_DIR}/mounts.txt"
+cat /proc/mounts >"${DRIVES_AND_STORAGE_DIR}/mounts.txt"
 sysctl -a >"${FINAL_DIR}/sysctl.txt"
 systemctl --type=service >"${FINAL_DIR}/systemctl-services.txt"
 sudo netplan get all >"${NETWORKING_DIR}/netplan.txt"
