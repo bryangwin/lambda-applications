@@ -10,7 +10,7 @@
 # Author(s):		Bryan Gwin
 # Script License:	BSD 3-clause
 
-# Define temporary directory and final directory structure
+# Define temporary directory and other directories to be used
 TMP_DIR="tmp_lambda_bug_report"
 mkdir -p "$TMP_DIR"
 FINAL_DIR="$TMP_DIR/lambda-bug-report"
@@ -22,6 +22,7 @@ mkdir -p "$SYSTEM_LOGS_DIR"
 REPOS_AND_PACKAGES_DIR="$FINAL_DIR/repos-and-packages"
 mkdir -p "$REPOS_AND_PACKAGES_DIR"
 NETWORKING_DIR="$FINAL_DIR/networking"
+mkdir -p "$NETWORKING_DIR"
 
 collect_drive_checks() {
     # Ensure smartmontools is installed for smartctl
