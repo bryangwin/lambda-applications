@@ -45,7 +45,7 @@ mkdir -p "$BMC_INFO_DIR"
 
 collect_drive_checks() {
     # Ensure smartmontools is installed for smartctl
-    if ! command -v smartctl &>/dev/null; then
+    if ! command -v smartctl >/dev/null 2>&1; then
         echo "smartctl could not be found, attempting to install."
         sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y smartmontools >/dev/null 2>&1
     fi
@@ -83,14 +83,14 @@ sudo dmesg -Tl err >"${SYSTEM_LOGS_DIR}/dmesg-errors.txt"
 journalctl >"${SYSTEM_LOGS_DIR}/journalctl.txt"
 
 # Check for ibstat and install if not present
-if ! command -v ibstat &>/dev/null; then
+if ! command -v ibstat >/dev/null 2>&1; then
     echo "ibstat could not be found, attempting to install."
     sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y infiniband-diags >/dev/null 2>&1
 fi
 ibstat >"${FINAL_DIR}/ibstat.txt"
 
 # Check for ipmitool and install if not present
-if ! command -v ipmitool &>/dev/null; then
+if ! command -v ipmitool >/dev/null 2>&1; then
     echo "ipmitool could not be found, attempting to install."
     sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y ipmitool >/dev/null 2>&1
 fi
@@ -98,21 +98,21 @@ sudo ipmitool sel elist >"${BMC_INFO_DIR}/elist.txt" 2>/dev/null
 sudo ipmitool sdr >"${BMC_INFO_DIR}/sdr.txt" 2>/dev/null
 
 # Check for sensors and install if not present
-if ! command -v sensors &>/dev/null; then
+if ! command -v sensors >/dev/null 2>&1; then
     echo "sensors could not be found, attempting to install."
     sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y lm-sensors >/dev/null 2>&1
 fi
 sensors >"${FINAL_DIR}/sensors.txt"
 
 # Check for iostat and install if not present
-if ! command -v iostat &>/dev/null; then
+if ! command -v iostat >/dev/null 2>&1; then
     echo "iostat could not be found, attempting to install."
     sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y sysstat >/dev/null 2>&1
 fi
 sudo iostat -xt >"${DRIVES_AND_STORAGE_DIR}/iostat.txt"
 
 # Check for lshw and install if not present
-if ! command -v lshw &>/dev/null; then
+if ! command -v lshw >/dev/null 2>&1; then
     echo "lshw could not be found, attempting to install."
     sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y lshw >/dev/null 2>&1
 fi
