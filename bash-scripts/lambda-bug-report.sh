@@ -80,7 +80,7 @@ echo "Collecting system logs and information..."
 # Collect system logs
 for log in /var/log/dmesg /var/log/kern.log /var/log/syslog /var/log/apt/history.log; do
     if [ -f "$log" ]; then
-        cp "$log" "$SYSTEM_LOGS_DIR/"
+        sudo cp "$log" "$SYSTEM_LOGS_DIR/"
     fi
 done
 
