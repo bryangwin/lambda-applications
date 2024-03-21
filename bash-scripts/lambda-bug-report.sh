@@ -99,7 +99,7 @@ if ! command -v iostat &>/dev/null; then
     echo "iostat could not be found, attempting to install."
     sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y sysstat >/dev/null 2>&1
 fi
-sudo iostat -xt >"${DRIVES_AND_STORAGE}/iostat.txt"
+sudo iostat -xt >"${DRIVES_AND_STORAGE_DIR}/iostat.txt"
 
 # Check for lshw and install if not present
 if ! command -v lshw &>/dev/null; then
