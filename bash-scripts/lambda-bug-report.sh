@@ -15,6 +15,9 @@ echo "This script is intended to run on a Lambda machine and collects various sy
 It includes the use of NVIDIA's bug report script to gather detailed information about NVIDIA GPUs and other system info.
 Credit to NVIDIA Corporation for the nvidia-bug-report.sh script."
 echo
+echo "This script will attempt to install any missing packages required for collecting system information."
+echo "Packages will include smartmontools, infiniband-diags, ipmitool, lm-sensors, sysstat, and lshw."
+echo
 echo "By delivering 'lambda-bug-report.log.gz' to Lambda, you acknowledge
 and agree that sensitive information may inadvertently be included in
 the output. Notwithstanding the foregoing, Lambda will use the
