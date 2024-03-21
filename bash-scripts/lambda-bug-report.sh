@@ -69,9 +69,6 @@ done
 sudo dmesg -Tl err >"${SYSTEM_LOGS_DIR}/dmesg-errors.txt"
 journalctl >"${SYSTEM_LOGS_DIR}/journalctl.txt"
 
-# Debugging information
-echo $PATH
-
 # Check for ibstat and install if not present
 if ! command -v ibstat &>/dev/null; then
     echo "ibstat could not be found, attempting to install."
