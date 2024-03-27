@@ -10,19 +10,21 @@
 # Author(s):		Bryan Gwin
 # Script License:	BSD 3-clause
 
-# Script info and dislaimer
-echo "This script is intended to run on a Lambda machine and collects various system logs and information for diagnostic purposes.
-It includes the use of NVIDIA's bug report script to gather detailed information about NVIDIA GPUs and other system info.
-Credit to NVIDIA Corporation for the nvidia-bug-report.sh script."
-echo
-echo "This script will attempt to install any missing packages required for collecting system information."
-echo "Packages will include smartmontools, infiniband-diags, ipmitool, lm-sensors, sysstat, and lshw."
-echo
-echo "By delivering 'lambda-bug-report.log.gz' to Lambda, you acknowledge
-and agree that sensitive information may inadvertently be included in
-the output. Notwithstanding the foregoing, Lambda will use the
-output only for the purpose of investigating your reported issue."
-echo
+# Script info and disclaimer
+script_info_and_disclaimer() {
+    echo "This script is intended to run on a Lambda machine and collects various system logs and information for diagnostic purposes."
+    echo "It includes the use of NVIDIA's bug report script to gather detailed information about NVIDIA GPUs and other system info."
+    echo "Credit to NVIDIA Corporation for the nvidia-bug-report.sh script."
+    echo
+    echo "This script will attempt to install any missing packages required for collecting system information."
+    echo "Packages will include smartmontools, infiniband-diags, ipmitool, lm-sensors, sysstat, and lshw."
+    echo
+    echo "By delivering 'lambda-bug-report.log.gz' to Lambda, you acknowledge"
+    echo "and agree that sensitive information may inadvertently be included in"
+    echo "the output. Notwithstanding the foregoing, Lambda will use the"
+    echo "output only for the purpose of investigating your reported issue."
+    echo
+}
 
 # Define and create temporary directory
 TMP_DIR="tmp_lambda_bug_report"
@@ -49,18 +51,19 @@ mkdir -p "$BMC_INFO_DIR"
 #Global variables
 APT_UPDATE_HAS_RUN=False
 
+# Collect SMART data for all drives
 collect_drive_checks() {
     # Ensure smartmontools is installed for smartctl
     if ! command -v smartctl >/dev/null 2>&1; then
         echo "smartctl could not be found, attempting to install."
         if [ "$APT_UPDATE_HAS_RUN" != "True" ]; then
-            sudo apt-get update >/dev/null 2>&1 
+            sudo apt-get update >/dev/null 2>&1
             APT_UPDATE_HAS_RUN=True
         fi
         sudo apt-get install -y smartmontools >/dev/null 2>&1
     fi
 
-    lsblk -f >"$DRIVES_AND_STORAGE_DIR/lsblk.txt"
+    lsblk -o NAME,MAJ:MIN,RM,SIZE,RO,FSTYPE,LABEL,UUID,TYPE,MOUNTPOINT -f >"$DRIVES_AND_STORAGE_DIR/lsblk.txt"
 
     # Collect SMART data for all drives
     DRIVES=$(lsblk | egrep "^sd|^nvm" | awk '{print $1}')
@@ -87,7 +90,6 @@ for log in /var/log/dmesg /var/log/kern.log /var/log/syslog /var/log/apt/history
     fi
 done
 
-# Collect other logs
 sudo dmesg -Tl err >"${SYSTEM_LOGS_DIR}/dmesg-errors.txt"
 journalctl >"${SYSTEM_LOGS_DIR}/journalctl.txt"
 
@@ -95,8 +97,8 @@ journalctl >"${SYSTEM_LOGS_DIR}/journalctl.txt"
 if ! command -v ibstat >/dev/null 2>&1; then
     echo "ibstat could not be found, attempting to install."
     if [ "$APT_UPDATE_HAS_RUN" != "True" ]; then
-            sudo apt-get update >/dev/null 2>&1 
-            APT_UPDATE_HAS_RUN=True
+        sudo apt-get update >/dev/null 2>&1
+        APT_UPDATE_HAS_RUN=True
     fi
     sudo apt-get install -y infiniband-diags >/dev/null 2>&1
 fi
@@ -109,8 +111,8 @@ fi
 if ! command -v ipmitool >/dev/null 2>&1; then
     echo "ipmitool could not be found, attempting to install."
     if [ "$APT_UPDATE_HAS_RUN" != "True" ]; then
-            sudo apt-get update >/dev/null 2>&1 
-            APT_UPDATE_HAS_RUN=True
+        sudo apt-get update >/dev/null 2>&1
+        APT_UPDATE_HAS_RUN=True
     fi
     sudo apt-get install -y ipmitool >/dev/null 2>&1
 fi
@@ -127,8 +129,8 @@ fi
 if ! command -v sensors >/dev/null 2>&1; then
     echo "sensors could not be found, attempting to install."
     if [ "$APT_UPDATE_HAS_RUN" != "True" ]; then
-            sudo apt-get update >/dev/null 2>&1 
-            APT_UPDATE_HAS_RUN=True
+        sudo apt-get update >/dev/null 2>&1
+        APT_UPDATE_HAS_RUN=True
     fi
     sudo apt-get install -y lm-sensors >/dev/null 2>&1
 fi
@@ -138,8 +140,8 @@ sensors >"${FINAL_DIR}/sensors.txt"
 if ! command -v iostat >/dev/null 2>&1; then
     echo "iostat could not be found, attempting to install."
     if [ "$APT_UPDATE_HAS_RUN" != "True" ]; then
-            sudo apt-get update >/dev/null 2>&1 
-            APT_UPDATE_HAS_RUN=True
+        sudo apt-get update >/dev/null 2>&1
+        APT_UPDATE_HAS_RUN=True
     fi
     sudo apt-get install -y sysstat >/dev/null 2>&1
 fi
@@ -149,8 +151,8 @@ sudo iostat -xt >"${DRIVES_AND_STORAGE_DIR}/iostat.txt"
 if ! command -v lshw >/dev/null 2>&1; then
     echo "lshw could not be found, attempting to install."
     if [ "$APT_UPDATE_HAS_RUN" != "True" ]; then
-            sudo apt-get update >/dev/null 2>&1 
-            APT_UPDATE_HAS_RUN=True
+        sudo apt-get update >/dev/null 2>&1
+        APT_UPDATE_HAS_RUN=True
     fi
     sudo apt-get install -y lshw >/dev/null 2>&1
 fi
