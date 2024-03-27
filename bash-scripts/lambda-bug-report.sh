@@ -63,7 +63,7 @@ collect_drive_checks() {
         sudo apt-get install -y smartmontools >/dev/null 2>&1
     fi
 
-    lsblk -o NAME,MAJ:MIN,RM,SIZE,RO,FSTYPE,LABEL,UUID,TYPE,MOUNTPOINT -f >"$DRIVES_AND_STORAGE_DIR/lsblk.txt"
+    lsblk -o NAME,MAJ:MIN,RM,SIZE,RO,FSTYPE,LABEL,UUID,TYPE,MOUNTPOINT >"$DRIVES_AND_STORAGE_DIR/lsblk.txt"
 
     # Collect SMART data for all drives
     DRIVES=$(lsblk | egrep "^sd|^nvm" | awk '{print $1}')
