@@ -191,6 +191,10 @@ collect_drive_checks
 # Compress all collected logs into a single file
 sudo tar -zcf lambda-bug-report.tar.gz -C "$TMP_DIR" lambda-bug-report
 
+# Ask if you want to view the collected logs and display the logs if yes
+read -e -p $'\nDo you want to view the collected logs? [Y/n] ' YN
+[[ $YN == "y" || $YN == "Y" || $YN == "" ]] && find "$TMP_DIR/lambda-bug-report" "*.txt" -execdir cat {} + | less
+
 # Cleanup
 rm -rf "$TMP_DIR"
 
