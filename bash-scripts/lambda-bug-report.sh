@@ -91,7 +91,7 @@ for log in /var/log/dmesg /var/log/kern.log /var/log/syslog /var/log/apt/history
 done
 
 sudo dmesg -Tl err >"${SYSTEM_LOGS_DIR}/dmesg-errors.txt"
-journalctl >"${SYSTEM_LOGS_DIR}/journalctl.txt"
+sudo journalctl >"${SYSTEM_LOGS_DIR}/journalctl.txt"
 
 # Check for ibstat and install if not present
 if ! command -v ibstat >/dev/null 2>&1; then
