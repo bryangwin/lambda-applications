@@ -136,7 +136,7 @@ if ! command -v sensors >/dev/null 2>&1; then
     fi
     sudo apt-get install -y lm-sensors >/dev/null 2>&1
 fi
-sensors >"${FINAL_DIR}/sensors.txt"
+sensors >"${FINAL_DIR}/sensors.txt" 2>/dev/null
 
 # Check for iostat and install if not present
 if ! command -v iostat >/dev/null 2>&1; then
@@ -180,7 +180,7 @@ cat /etc/fstab >"${DRIVES_AND_STORAGE_DIR}/fstab.txt"
 cat /etc/default/grub >"${FINAL_DIR}/grub.txt"
 lsmod >"${FINAL_DIR}/lsmod.txt"
 dpkg -l >"${REPOS_AND_PACKAGES_DIR}/dpkg.txt"
-pip -v list >"${REPOS_AND_PACKAGES_DIR}/pip-list.txt"
+pip -v list >"${REPOS_AND_PACKAGES_DIR}/pip-list.txt" 2>/dev/null
 ls /etc/apt/sources.list.d >"${REPOS_AND_PACKAGES_DIR}/listd-repos.txt"
 grep -v '^#' /etc/apt/sources.list >"${REPOS_AND_PACKAGES_DIR}/sources-list.txt"
 cat /proc/mounts >"${DRIVES_AND_STORAGE_DIR}/mounts.txt"
