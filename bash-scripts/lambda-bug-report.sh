@@ -26,6 +26,8 @@ script_info_and_disclaimer() {
     echo
 }
 
+script_info_and_disclaimer
+
 # Define and create temporary directory
 TMP_DIR="tmp_lambda_bug_report"
 mkdir -p "$TMP_DIR"
