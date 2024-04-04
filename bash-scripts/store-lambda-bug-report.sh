@@ -50,7 +50,7 @@ done
 mkdir -p "$TARGET_DIR"
 
 # Find the latest lambda-bug-report.tar.gz in the source directory
-latest_file=$(ls -v "$SOURCE_DIR"/lambda-bug-report*.tar.gz | tail -n 1)
+latest_file=$(ls "$SOURCE_DIR"/lambda-bug-report*.tar.gz | sort -V | tail -n 1)
 
 if [[ ! -f "$latest_file" ]]; then
     echo "Error: lambda-bug-report.tar.gz not found in $SOURCE_DIR"
