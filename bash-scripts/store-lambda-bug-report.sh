@@ -69,9 +69,21 @@ while true; do
     fi
 done
 
-# Prepare the directory name with the ticket number
+# Add version number to the directory name
+version=1
+highest_version=$(find "$TARGET_DIR" -type d -name "lambda-bug-report-${ticket_number}v*-*-*-*-*:*" |
+    awk -F'v|-' '{print $(NF-4)}' |
+    sort -nr |
+    head -n1)
+
+if [[ -n "$highest_version" && "$highest_version" -gt 0 ]]; then
+    version=$((highest_version + 1))
+fi
+
+# Prepare the directory name with the ticket number, including its version, and the current datetime
+ticket_number_with_version="${ticket_number}v${version}"
 current_datetime=$(date +"%Y-%m-%d-%H:%M")
-dir_name="lambda-bug-report-$ticket_number-$current_datetime"
+dir_name="lambda-bug-report-${ticket_number_with_version}-${current_datetime}"
 
 # Extract the tar.gz file into the target directory with the correct name
 tar -xf "$latest_file" -C "$TARGET_DIR"
