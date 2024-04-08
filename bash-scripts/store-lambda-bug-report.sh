@@ -23,6 +23,7 @@ open_bug_report() {
     latest_log_dir=$(ls "$TARGET_DIR" | grep "lambda-bug-report-$1" | sort -V | tail -n 1)
     if [[ -n "$latest_log_dir" ]]; then
         if command -v check-nvidia-bug-report.sh &>/dev/null; then
+            # NOTE: This assumes the check-nvidia-bug-report.sh script is in your path
             (cd "$TARGET_DIR/$latest_log_dir" && check-nvidia-bug-report.sh nvidia-bug-report.log)
         else
             echo "check-nvidia-bug-report.sh not found in your path."
