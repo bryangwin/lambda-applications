@@ -112,6 +112,6 @@ zipp==3.18.1"
 
 hash -r pip; pip list -v | grep '/home/ubuntu/' | awk '{print $1}' | xargs pip uninstall -y; hash -r pip
 
-echo "$JUPYTER_REQUIREMENTS" | pip install -r -
+pip install -r <(echo "$JUPYTER_REQUIREMENTS")
 
-sudo systemctl restart lambda-jupyter.service
+sudo systemctl restart lambda-jupyter.service 
