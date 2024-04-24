@@ -6,3 +6,4 @@ Follow prompts to create a new user and run ansible playbook across all nodes
 
 ```remove-user```
 Follow prompts to remove a user from all nodes.
+
