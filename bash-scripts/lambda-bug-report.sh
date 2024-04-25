@@ -88,7 +88,12 @@ echo "Collecting system logs and information..."
 # Collect system logs
 for log in /var/log/dmesg /var/log/kern.log /var/log/syslog /var/log/dpkg.log /var/log/apt/history.log; do
     if [ -f "$log" ]; then
-        sudo cp "$log" "$SYSTEM_LOGS_DIR/"
+        filename=$(basename "$log")
+        if [ "$filename" = "history.log" ]; then
+            sudo cp "$log" "$SYSTEM_LOGS_DIR/apt-history.log"
+        else
+            sudo cp "$log" "$SYSTEM_LOGS_DIR/"
+        fi
     fi
 done
 
