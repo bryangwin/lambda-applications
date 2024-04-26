@@ -39,15 +39,20 @@ def get_gpu_count():
 
 def main():
     # Get the number of available GPUs
-    device_count = get_gpu_count()
-    print(f"Number of available GPUs: {device_count}")
+    global_device_count = get_gpu_count()
+    print(f"Number of available GPUs: {global_device_count}")
+    
+    cuda_device_count = torch.cuda.device_count()
 
-    if device_count == 0:
+    if global_device_count == 0:
         print("No GPUs available. Make sure NVIDIA drivers are properly installed.")
+        return
+    elif global_device_count != cuda_device_count:
+        print("Not all GPUs are being utilized by cuda.")
         return
 
     # Utilize all available GPUs
-    for i in range(device_count):
+    for i in range(cuda_device_count):
         device = torch.device(f"cuda:{i}")
         print(f"Using GPU {i}: {torch.cuda.get_device_name(i)}")
         # Run a simple computation on each GPU
