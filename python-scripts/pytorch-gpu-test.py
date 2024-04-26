@@ -27,6 +27,7 @@ def main():
         return
 
     # Utilize all available GPUs
+    print("Testing GPU utilization...")
     for i in range(cuda_device_count):
         device = torch.device(f"cuda:{i}")
         print(f"Using GPU {i}: {torch.cuda.get_device_name(i)}")
