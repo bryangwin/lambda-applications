@@ -36,9 +36,8 @@ def main():
             a = torch.randn(1000, 1000).cuda()
             b = torch.randn(1000, 1000).cuda()
             c = torch.matmul(a, b)
-            # Ensure the computation is finished
+            # Ensure the computation finished cleanly
             try:
-                # Ensure the computation is finished
                 torch.cuda.synchronize()
             except Exception as e:
                 print(f"Error occurred while utilizing GPU {i}: {e}")
