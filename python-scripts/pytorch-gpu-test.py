@@ -43,6 +43,7 @@ def main():
     print(f"Number of available GPUs: {global_device_count}")
     
     cuda_device_count = torch.cuda.device_count()
+    print(f"Number of available GPUs on cuda: {cuda_device_count}")
 
     if global_device_count == 0:
         print("No GPUs available. Make sure NVIDIA drivers are properly installed.")
