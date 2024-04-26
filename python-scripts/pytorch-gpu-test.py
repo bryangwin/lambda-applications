@@ -11,10 +11,11 @@ def get_gpu_count():
         return 0
 
 def main():
-    # Get the number of available GPUs
+    # Get the number of available GPUs on machine
     global_device_count = get_gpu_count()
     print(f"Number of available GPUs: {global_device_count}")
     
+    # Get the number of GPUs being utilized by PyTorch
     cuda_device_count = torch.cuda.device_count()
     print(f"Number of available GPUs being used by PyTorch: {cuda_device_count}")
 
