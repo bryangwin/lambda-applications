@@ -86,16 +86,21 @@ fi
 echo "Collecting system logs and information..."
 
 # Collect system logs
-for log in /var/log/dmesg /var/log/kern.log /var/log/syslog /var/log/dpkg.log /var/log/apt/history.log; do
+for log in /var/log/dmesg /var/log/kern.log /var/log/syslog /var/log/dpkg.log; do
     if [ -f "$log" ]; then
-        filename=$(basename "$log")
-        if [ "$filename" = "history.log" ]; then
-            sudo cp "$log" "$SYSTEM_LOGS_DIR/apt-history.log"
-        else
-            sudo cp "$log" "$SYSTEM_LOGS_DIR/"
-        fi
+        sudo cp "$log" "$SYSTEM_LOGS_DIR/"
     fi
 done
+
+# Collect all apt history logs into one sorted file
+find /var/log/apt -type f -name "history.log*" | sort -Vr | while read log; do
+    if [[ "$log" =~ \.gz$ ]]; then
+        zcat "$log" | sudo tee -a "$SYSTEM_LOGS_DIR/apt-history.log" > /dev/null
+    else
+        cat "$log" | sudo tee -a "$SYSTEM_LOGS_DIR/apt-history.log" > /dev/null
+    fi
+done
+
 
 sudo dmesg -Tl err >"${SYSTEM_LOGS_DIR}/dmesg-errors.txt"
 sudo journalctl >"${SYSTEM_LOGS_DIR}/journalctl.txt"
