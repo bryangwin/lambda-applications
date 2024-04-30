@@ -200,6 +200,8 @@ sudo sysctl -a >"${FINAL_DIR}/sysctl-all.txt"
 systemctl --type=service >"${FINAL_DIR}/systemctl-services.txt"
 sudo netplan get all >"${NETWORKING_DIR}/netplan.txt" 2>/dev/null
 ip addr >"${NETWORKING_DIR}/ip-addr.txt"
+sudo iptables -L --line-numbers >"${NETWORKING_DIR}/iptables.txt"
+sudo ufw status >"${NETWORKING_DIR}/ufw-status.txt"
 sudo resolvectl status >"${NETWORKING_DIR}/resolvectl-status.txt"
 top -n 1 -b >"${FINAL_DIR}/top.txt"
 
