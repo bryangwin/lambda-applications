@@ -204,6 +204,7 @@ sudo iptables -L --line-numbers >"${NETWORKING_DIR}/iptables.txt"
 sudo ufw status >"${NETWORKING_DIR}/ufw-status.txt"
 sudo resolvectl status >"${NETWORKING_DIR}/resolvectl-status.txt"
 top -n 1 -b >"${FINAL_DIR}/top.txt"
+nvidia-smi >"${FINAL_DIR}/nvidia-smi.txt"
 
 collect_drive_checks
 
