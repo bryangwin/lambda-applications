@@ -81,6 +81,7 @@ sudo nvidia-bug-report.sh >/dev/null 2>&1
 # If nvidia-bug-report.log.gz exists, decompress it
 if [ -f "nvidia-bug-report.log.gz" ]; then
     gunzip -c nvidia-bug-report.log.gz >"${FINAL_DIR}/nvidia-bug-report.log"
+    sudo rm nvidia-bug-report.log.gz
 fi
 
 echo "Collecting system logs and information..."
