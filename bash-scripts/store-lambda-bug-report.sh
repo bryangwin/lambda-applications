@@ -3,6 +3,7 @@
 # Description: This script will find the lambda-bug-report.tar.gz file
 # from the SOURCE_DIR directory, prompt the user for a ticket number,
 # extract the file into TARGET_DIR directory with the ticket number and current date/time.
+# Alternatively, you can specify a file path directly with the -f option.
 
 # You can use -o when you run the script to open the file with Mark's check-nvidia-bug-report.sh script.
 # NOTE: This assumes the check-nvidia-bug-report.sh script is in your path.
@@ -14,8 +15,9 @@
 SOURCE_DIR=~/Downloads
 TARGET_DIR=~/lambda-bug-reports
 
-# Flag for opening the report
+# Flags
 OPEN_REPORT=false
+SPECIFIED_FILE=""
 
 # Function to open the bug report with check-nvidia-bug-report.sh
 open_bug_report() {
@@ -35,14 +37,19 @@ open_bug_report() {
 }
 
 # Process flags
-while getopts "o" opt; do
+while getopts "of:" opt; do
     case $opt in
     o)
         OPEN_REPORT=true
         ;;
+    f)
+        SPECIFIED_FILE=$OPTARG
+        ;;
     \?)
-        echo "Use -o if you'd like to open the file with the parsing script" >&2
-        exit
+        echo "Usage: $0 [-o] [-f file_path]" >&2
+        echo "  -o          Open the report with the parsing script"
+        echo "  -f file     Specify the path to the lambda-bug-report.tar.gz file"
+        exit 1
         ;;
     esac
 done
@@ -50,11 +57,15 @@ done
 # Ensure the target directory exists
 mkdir -p "$TARGET_DIR"
 
-# Find the latest lambda-bug-report.tar.gz in the source directory
-latest_file=$(ls "$SOURCE_DIR"/lambda-bug-report*.tar.gz | sort -V | tail -n 1)
+# Determine the file to use
+if [[ -n "$SPECIFIED_FILE" ]]; then
+    latest_file="$SPECIFIED_FILE"
+else
+    latest_file=$(ls "$SOURCE_DIR"/lambda-bug-report*.tar.gz | sort -V | tail -n 1)
+fi
 
 if [[ ! -f "$latest_file" ]]; then
-    echo "Error: lambda-bug-report.tar.gz not found in $SOURCE_DIR"
+    echo "Error: lambda-bug-report.tar.gz not found."
     exit 1
 fi
 
@@ -89,6 +100,8 @@ dir_name="lambda-bug-report-${ticket_number_with_version}-${current_datetime}"
 # Extract the tar.gz file into the target directory with the correct name
 tar -xf "$latest_file" -C "$TARGET_DIR"
 mv "$TARGET_DIR/lambda-bug-report" "$TARGET_DIR/$dir_name"
+
+sudo rm -rf "$SOURCE_DIR/$latest_file"
 
 # Open the report if requested
 if $OPEN_REPORT; then
