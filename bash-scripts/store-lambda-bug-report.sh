@@ -101,7 +101,7 @@ dir_name="lambda-bug-report-${ticket_number_with_version}-${current_datetime}"
 tar -xf "$latest_file" -C "$TARGET_DIR"
 mv "$TARGET_DIR/lambda-bug-report" "$TARGET_DIR/$dir_name"
 
-sudo rm -rf "$SOURCE_DIR/$latest_file"
+rm -rf "$SOURCE_DIR/$latest_file"
 
 # Open the report if requested
 if $OPEN_REPORT; then
